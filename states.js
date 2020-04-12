@@ -61,6 +61,7 @@ class BaseState {
     constructor(stateManager, ctx) {
         this.stateManager = stateManager;
         this.ctx = ctx;
+
     }
 
     render() {
@@ -88,16 +89,26 @@ class BaseState {
 class SplashScreenState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
+        
 
-        const startButton = new ImageButton(100, 100, 60, 60, resourceManager.getImageSource('virus'));
+        const startButton = new ImageButton(400, 50, 150, 150, resourceManager.getImageSource('start_button'));
         startButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.MAIN_MENU);
+            this.stateManager.changeState(STATES.GAME);
         });
 
+        const exitButton = new ImageButton(400, 150, 150, 150, resourceManager.getImageSource('exit_button'));
+        exitButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.INFO);
+        });
+
+
+
         this.objects = [
-            startButton,
+            startButton, exitButton
         ];
     }
+
+
 
     handleEvent(ev) {
         this.objects.forEach((object) => {
@@ -138,7 +149,7 @@ class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
-        this.bgImage = resourceManager.getImageSource('crowd');
+        this.bgImage = resourceManager.getImageSource('bg');
         this.pointerImage = resourceManager.getImageSource('pointer2');
 
         // Create 5 balls
@@ -178,12 +189,12 @@ class MainMenu extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
-        const startGameButton = new TextButton(100, 100, 200, 40, 40, 'Start Game');
+        const startGameButton = new TextButton(100, 100, 200, 40, 40, 'START');
         startGameButton.onClick((ev) => {
             this.stateManager.changeState(STATES.GAME);
         });
 
-        const infoButton = new TextButton(100, 200, 200, 40, 40, 'Help');
+        const infoButton = new TextButton(100, 200, 200, 40, 40, 'SETTINGS');
         infoButton.onClick((ev) => {
             this.stateManager.changeState(STATES.INFO);
         });
@@ -224,9 +235,7 @@ class InfoState extends BaseState {
         const canvas = document.getElementById("canvas");
         this.objects = [
             new Background(0, 0, canvas.width, canvas.height),
-            new TextButton(100, 100, 200, 40, 40, 'Jedno Info'),
-            new TextButton(100, 150, 200, 40, 40, 'Druhe Info'),
-            new TextButton(100, 200, 200, 40, 40, 'Tretie Info'),
+            new TextButton(400, 200, 200, 40, 40, 'GAME OVER'),
         ];
     }
 

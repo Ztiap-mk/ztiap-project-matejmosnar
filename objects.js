@@ -2,14 +2,13 @@ class Ball {
     // Initialization
     constructor() {
         this.canvas = document.getElementById("canvas");
-        this.image = resourceManager.getImageSource('ball');
+        this.image = resourceManager.getImageSource('main_ship');
 
         this.x = Math.random() * canvas.width
         this.y = Math.random() * canvas.height
         this.dx = Math.random() * 50 - 25
         this.dy = Math.random() * 50 - 25
         this.size = Math.random() + .3
-        this.rotation = 0
     }
 
     // Movement logic
@@ -35,7 +34,7 @@ class Ball {
         // Movement
         this.x += this.dx * dt
         this.y += 0 * dt
-        this.rotation +=dt/3
+        //this.rotation +=dt/3
     }
 
     // Render self
@@ -70,7 +69,7 @@ class Pointer {
 class Background {
     constructor(x, y, width, height) {
         this.canvas = document.getElementById("canvas");
-        this.image = resourceManager.getImageSource('crowd');
+        this.image = resourceManager.getImageSource('bg');
 
         this.x = x;
         this.y = y;

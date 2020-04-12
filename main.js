@@ -2,7 +2,11 @@ const IMAGES = [
     {name: 'ball', src: 'img/ball.png'},
     {name: 'virus', src: 'img/virus.png'},
     {name: 'pointer2', src: 'img/pointer2.png'},
+    {name: 'main_ship', src: 'img/alienship_new.png'},
+    {name: 'bg', src: 'img/background.jpg'},
     {name: 'crowd', src: 'img/crowd.png'},
+    {name: 'start_button', src: 'img/play_buttons.png'},
+    {name: 'exit_button', src: 'img/exit_buttons.png'},
 ];
 
 const SOUNDS = [
