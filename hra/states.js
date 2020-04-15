@@ -1,8 +1,9 @@
 const STATES = {
     SPLASH: 'splashScreenState',
     GAME: 'gameState',
+    GAME_A_OFF: 'gameStateAudioOff',
     MAIN_MENU: 'mainMenu',
-    INFO: 'info',
+    GAME_OVER: 'gameOver',
     INSTRUCT: 'instructionState',
 }
 
@@ -21,8 +22,8 @@ class StateManager {
             splashScreenState: new SplashScreenState(this, ctx),
             gameState: new GameState(this, ctx),
             mainMenu: new MainMenu(this, ctx),
-            info: new InfoState(this, ctx),
-            instructionState: new instructionState(this,ctx),
+            gameOver: new gameOver(this, ctx),
+            instructionState: new instructionState(this, ctx),
         };
         this.currentState = this.states.splashScreenState;
     }
@@ -100,7 +101,7 @@ class SplashScreenState extends BaseState {
 
         const exitButton = new ImageButton(400, 150, 150, 150, resourceManager.getImageSource('exit_button'));
         exitButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.INFO);
+            this.stateManager.changeState(STATES.GAME_OVER);
         });
 
 
@@ -149,8 +150,7 @@ class instructionState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
-
-
+        
         const startButton = new ImageButton(0, 0, 1000, 400, resourceManager.getImageSource('instruct'));
         startButton.onClick((ev) => {
             this.stateManager.changeState(STATES.GAME);
@@ -190,16 +190,52 @@ class GameState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
+
+
         this.bgImage = resourceManager.getImageSource('bg');
-        this.pointerImage = resourceManager.getImageSource('pointer2');
+       // this.pointerImage = resourceManager.getImageSource('pointer2');
+
+        var music = document.getElementById("music")
+        music.play()
 
 
-        for(let i=0;i<5;i++){
+
+        const audioOnButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_on'));
+        const audioOffButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_off'));
+
+        this.objects2 = [
+            audioOnButton,
+        ];
+
+        audioOnButton.onClick((ev) => {
+            this.objects2 = [
+                audioOffButton,
+            ]
+        });
+
+        audioOffButton.onClick((ev) => {
+            this.objects2 = [
+                audioOnButton,
+            ]
+        });
+
+        for(let i=0;i<3;i++){
             this.objects.push(new enemyShip());
+            this.objects.push(new enemyShip2());
         }
-        this.objects.push(new Ball());
+
+
+
+        this.objects.push(new mainShip());
 
     }
+
+    handleEvent(ev) {
+        this.objects2.forEach((object) => {
+            object.handleEvent(ev);
+        });
+    }
+
 
     update(dt) {
         this.objects.forEach((object) => {
@@ -209,9 +245,11 @@ class GameState extends BaseState {
 
     render(ctx) {
         this.ctx.drawImage(this.bgImage,0,0,1000,400);
-        this.ctx.drawImage(this.pointerImage,400,50,50,50);
+        //this.ctx.drawImage(this.pointerImage,400,50,50,50);
         this.objects.forEach(object => object.render(this.ctx));
+        this.objects2.forEach(object => object.render(this.ctx));
     }
+
 
     // /**
     //  *
@@ -228,6 +266,8 @@ class GameState extends BaseState {
     // }
 }
 
+
+
 class MainMenu extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
@@ -239,7 +279,7 @@ class MainMenu extends BaseState {
 
         const infoButton = new TextButton(100, 200, 200, 40, 40, 'SETTINGS');
         infoButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.INFO);
+            this.stateManager.changeState(STATES.GAME_OVER);
         });
 
         this.objects = [
@@ -253,9 +293,7 @@ class MainMenu extends BaseState {
             object.handleEvent(ev);
         });
 
-        if (isKeyPressEvent(ev) && ev.key === 'g') {
-            this.stateManager.changeState(STATES.GAME);
-        }
+
     }
 
     // /**
@@ -272,17 +310,24 @@ class MainMenu extends BaseState {
     // }
 }
 
-class InfoState extends BaseState {
+class gameOver extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
         const canvas = document.getElementById("canvas");
+
+        const retryButton = new TextButton(400, 300, 200, 40, 40, 'RETRY');
+        retryButton.onClick((ev) => {
+            this.stateManager.changeState(STATES.GAME);
+        });
+
         this.objects = [
             new Background(0, 0, canvas.width, canvas.height),
             new TextButton(400, 200, 200, 40, 40, 'GAME OVER'),
             new TextButton(400, 250, 200, 40, 40, 'SCORE: '),
-            new TextButton(400, 300, 200, 40, 40, 'RETRY'),
+            retryButton,
         ];
     }
+
 
     handleEvent(ev) {
         this.objects.forEach((object) => {

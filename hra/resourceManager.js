@@ -5,16 +5,16 @@ class ResourceManager {
 
     async init() {
         await this.loadImages();
-        //await this.loadSounds();
+        await this.loadSounds();
     }
-/*
+
     async loadSounds() {
 
         await Promise.all(
             SOUNDS.map(sound => this.loadSound(sound)),
         )
     }
-*/
+
     async loadImages() {
         await Promise.all(
             IMAGES.map(image => this.loadImage(image)),

@@ -1,18 +1,17 @@
 const IMAGES = [
-    {name: 'ball', src: 'img/ball.png'},
-    {name: 'virus', src: 'img/virus.png'},
-    {name: 'pointer2', src: 'img/pointer2.png'},
     {name: 'main_ship', src: 'img/alienship_new.png'},
     {name: 'bg', src: 'img/background.jpg'},
-    {name: 'crowd', src: 'img/crowd.png'},
     {name: 'start_button', src: 'img/play_buttons.png'},
     {name: 'exit_button', src: 'img/exit_buttons.png'},
     {name: 'enemy_ship', src: 'img/small_ships.png'},
+    {name: 'enemy_ship2', src: 'img/spaceship_enemy_red.png'},
     {name: 'instruct', src: 'img/instruct.jpg'},
+    {name: 'audio_on', src: 'img/audio_on.png'},
+    {name: 'audio_off', src: 'img/audio_off.png'},
 ];
 
 const SOUNDS = [
-    {name: 'death', src: 'audio/death.mp3', count: 10},
+    {name: 'music', src: 'audio/music.mp3', count: 10},
 ];
 
 const KEY_EVENT_TYPES = {
@@ -61,7 +60,7 @@ class Game {
         this.stateManager.handleEvent(ev);
     }
 
-    // spusta nekonecnu sluzku
+    // spusta nekonecnu slucku
     startLoop() {
         this.time = Date.now();
         this.step();

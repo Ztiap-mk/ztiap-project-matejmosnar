@@ -1,4 +1,4 @@
-class Ball {
+class mainShip {
     // Initialization
     constructor() {
         this.canvas = document.getElementById("canvas");
@@ -9,6 +9,7 @@ class Ball {
         this.dx = 20
         this.dy = Math.random() * 50 - 25
         this.size = 3;
+
     }
 
     // Movement logic
@@ -49,14 +50,15 @@ class Ball {
 }
 
 
+
 class enemyShip {
     // Initialization
     constructor() {
         this.canvas = document.getElementById("canvas");
         this.image = resourceManager.getImageSource('enemy_ship');
-
+        this.rotation = 3.1415
         this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.y = Math.random() * canvas.height/2.2
         this.dx = Math.random() * 50 - 25
         this.dy = Math.random() * 50 - 25
 
@@ -100,6 +102,56 @@ class enemyShip {
     }
 }
 
+class enemyShip2 {
+    // Initialization
+    constructor() {
+        this.canvas = document.getElementById("canvas");
+        this.image = resourceManager.getImageSource('enemy_ship2');
+        this.rotation = 3.1415
+        this.x = Math.random() * canvas.width
+        this.y = Math.random() * canvas.height/2.2
+        this.dx = Math.random() * 50 - 25
+        this.dy = Math.random() * 50 - 25
+
+        this.size = 2
+    }
+
+    // Movement logic
+    move(dt) {
+        const canvas = this.canvas;
+        if (this.x > canvas.width) {
+            this.x = canvas.width
+            this.dx = -Math.abs(this.dx)
+        }
+        if (this.x < 0) {
+            this.x = 0
+            this.dx = Math.abs(this.dx)
+        }
+        if (this.y > canvas.height) {
+            this.y = canvas.height
+            this.dy = -Math.abs(this.dy)
+        }
+        if (this.y < 0) {
+            this.y = 0
+            this.dy = Math.abs(this.dy) * 0.95
+        }
+
+        // Movement
+        this.x += this.dx * dt
+        this.y += 0 * dt
+
+    }
+
+    // Render self
+    render(ctx) {
+        ctx.save()
+        ctx.translate(this.x, this.y)
+        ctx.rotate(this.rotation)
+        ctx.scale(this.size, this.size)
+        ctx.drawImage(this.image, -20, -20, 40, 40)
+        ctx.restore()
+    }
+}
 
 class Pointer {
     constructor(x, y, width, height) {
