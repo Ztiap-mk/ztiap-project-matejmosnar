@@ -196,7 +196,7 @@ class GameState extends BaseState {
        // this.pointerImage = resourceManager.getImageSource('pointer2');
 
         var music = document.getElementById("music")
-        music.play()
+
 
 
 
@@ -211,23 +211,21 @@ class GameState extends BaseState {
             this.objects2 = [
                 audioOffButton,
             ]
+            music.play()
         });
 
         audioOffButton.onClick((ev) => {
             this.objects2 = [
                 audioOnButton,
             ]
+            music.pause()
         });
 
         for(let i=0;i<3;i++){
             this.objects.push(new enemyShip());
             this.objects.push(new enemyShip2());
         }
-
-
-
         this.objects.push(new mainShip());
-
     }
 
     handleEvent(ev) {
@@ -245,7 +243,6 @@ class GameState extends BaseState {
 
     render(ctx) {
         this.ctx.drawImage(this.bgImage,0,0,1000,400);
-        //this.ctx.drawImage(this.pointerImage,400,50,50,50);
         this.objects.forEach(object => object.render(this.ctx));
         this.objects2.forEach(object => object.render(this.ctx));
     }
@@ -315,25 +312,38 @@ class gameOver extends BaseState {
         super(manager, ctx);
         const canvas = document.getElementById("canvas");
 
-        const retryButton = new TextButton(400, 300, 200, 40, 40, 'RETRY');
+        this.objects = [
+            new Background(0, 0, canvas.width, canvas.height),
+            new TextButton(325, 200, 400, 100, 60, 'GAME OVER'),
+            new TextButton(400, 250, 200, 40, 40, 'SCORE: '),
+        ];
+
+        const retryButton = new TextButton(450, 320, 200, 40, 40, 'RETRY')
         retryButton.onClick((ev) => {
             this.stateManager.changeState(STATES.GAME);
         });
 
-        this.objects = [
-            new Background(0, 0, canvas.width, canvas.height),
-            new TextButton(400, 200, 200, 40, 40, 'GAME OVER'),
-            new TextButton(400, 250, 200, 40, 40, 'SCORE: '),
+        this.objects2 = [
             retryButton,
-        ];
+        ]
+    }
+
+    render(ctx) {
+        this.objects.forEach(object => object.render(this.ctx));
+        this.objects2.forEach(object => object.render(this.ctx));
     }
 
 
     handleEvent(ev) {
-        this.objects.forEach((object) => {
+        this.objects2.forEach((object) => {
             object.handleEvent(ev);
         });
+
+        if (isKeyPressEvent(ev) && ev.key === 'g') {
+            this.stateManager.changeState(STATES.GAME);
+        }
     }
+
 
     // /**
     //  *
