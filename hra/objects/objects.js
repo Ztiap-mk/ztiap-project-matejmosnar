@@ -104,7 +104,7 @@ class TextButton extends BaseObject {
 
         const gradient = ctx.createLinearGradient(0, 0, 1000, 0);
         gradient.addColorStop("0", "magenta");
-        gradient.addColorStop("0.5", "blue");
+        gradient.addColorStop("0", "blue");
         gradient.addColorStop("1.0", "red");
 
         ctx.font = `${this.size}px Verdana`;

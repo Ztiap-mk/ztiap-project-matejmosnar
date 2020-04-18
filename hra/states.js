@@ -239,6 +239,8 @@ class GameState extends BaseState {
         this.objects.forEach((object) => {
             object.move(dt);
         });
+
+
     }
 
     render(ctx) {
