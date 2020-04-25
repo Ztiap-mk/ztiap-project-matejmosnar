@@ -202,7 +202,7 @@ class GameState extends BaseState {
 
         const audioOnButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_on'));
         const audioOffButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_off'));
-
+        this.bullets=[]
         this.objects2 = [
             audioOnButton,
         ];
@@ -225,22 +225,42 @@ class GameState extends BaseState {
             this.objects.push(new enemyShip());
             this.objects.push(new enemyShip2());
         }
-        this.objects.push(new mainShip());
+        this.mainship = new mainShip();
     }
+
+
 
     handleEvent(ev) {
         this.objects2.forEach((object) => {
             object.handleEvent(ev);
         });
+
+        if (isKeyPressEvent(ev) && ev.key === 'a') {
+            this.mainship.moveLeft(ev);
+        }
+
+        if (isKeyPressEvent(ev) && ev.key === 'd') {
+            this.mainship.moveRight(ev);
+        }
+
+        if (isKeyPressEvent(ev) && ev.key === 'x') {
+            this.bullets.push(new blueBullet())
+        }
+
+
+        //this.mainship.handleEvent(ev);
     }
+
 
 
     update(dt) {
         this.objects.forEach((object) => {
             object.move(dt);
         });
-        
-        mainShip.moveLeft(dt);
+
+        this.bullets.forEach((object) => {
+            object.shoot(dt);
+        });
 
     }
 
@@ -248,6 +268,8 @@ class GameState extends BaseState {
         this.ctx.drawImage(this.bgImage,0,0,1000,400);
         this.objects.forEach(object => object.render(this.ctx));
         this.objects2.forEach(object => object.render(this.ctx));
+        this.bullets.forEach(object => object.render(this.ctx));
+        this.mainship.render(this.ctx);
     }
 
 

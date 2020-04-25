@@ -5,6 +5,7 @@ const IMAGES = [
     {name: 'exit_button', src: 'img/exit_buttons.png'},
     {name: 'enemy_ship', src: 'img/small_ships.png'},
     {name: 'enemy_ship2', src: 'img/spaceship_enemy_red.png'},
+    {name: 'blue_bullet', src: 'img/bullet.png'},
     {name: 'instruct', src: 'img/instruct.jpg'},
     {name: 'audio_on', src: 'img/audio_on.png'},
     {name: 'audio_off', src: 'img/audio_off.png'},

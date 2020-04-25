@@ -6,7 +6,7 @@ class mainShip {
 
         this.x = Math.random() * canvas.width
         this.y = 330
-        this.dx = 20
+        this.dx = Math.random() * 50 - 25
         this.dy = Math.random() * 50 - 25
         this.size = 3;
 
@@ -36,19 +36,38 @@ class mainShip {
         const canvas = this.canvas;
         if (this.x > canvas.width) {
             this.x = canvas.width
-            this.dx = -Math.abs(this.dx)
+            //this.dx = -Math.abs(this.dx)
         }
         if (this.x < 0) {
             this.x = 0
-            this.dx = Math.abs(this.dx)
+            //this.dx = Math.abs(this.dx)
         }
 
 
         // Movement
-        this.x += this.dx * dt
+        this.x += -25
         //this.y += 0 * dt
         //this.rotation +=dt/3
     }
+
+    moveRight(dt) {
+        const canvas = this.canvas;
+        if (this.x > canvas.width) {
+            this.x = canvas.width
+            //this.dx = -Math.abs(this.dx)
+        }
+        if (this.x < 0) {
+            this.x = 0
+            //this.dx = Math.abs(this.dx)
+        }
+
+
+        // Movement
+        this.x += 25
+        //this.y += 0 * dt
+        //this.rotation +=dt/3
+    }
+
 
     // Render self
     render(ctx) {
@@ -62,7 +81,45 @@ class mainShip {
 
 }
 
+class blueBullet{
 
+    // Initialization
+    constructor() {
+        this.canvas = document.getElementById("canvas");
+        this.image = resourceManager.getImageSource('blue_bullet');
+        this.rotation = 3.1415
+        this.x = 100
+        this.y = 200
+
+        this.dy = Math.random() * 50 - 25
+
+        this.size = 1.4
+    }
+
+    // Movement logic
+    shoot(dt) {
+
+        if (this.y > canvas.height) {
+            this.y = canvas.height
+            this.dy = -Math.abs(this.dy)
+        }
+
+        // Movement
+        this.y -= 10
+
+    }
+
+    // Render self
+    render(ctx) {
+        ctx.save()
+        ctx.translate(this.x, this.y)
+        //ctx.rotate(this.rotation)
+        ctx.scale(this.size, this.size)
+        ctx.drawImage(this.image, -20, -20, 40, 40)
+        ctx.restore()
+    }
+
+}
 
 class enemyShip {
     // Initialization
