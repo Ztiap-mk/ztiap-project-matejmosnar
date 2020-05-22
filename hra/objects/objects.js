@@ -62,10 +62,7 @@ class ImageButton extends BaseObject {
         super(x, y, width, height);
         this.image = image;
     }
-
-    // update(dt) {
-
-    // }
+    
 
     render(ctx) {
         const {image, x, y, width, height} = this;
@@ -88,16 +85,6 @@ class TextButton extends BaseObject {
         this.size = size;
     }
 
-    // update(dt) {
-
-    // }
-
-    /**
-     *
-     *
-     * @param {CanvasRenderingContext2D} ctx
-     * @memberof TextButton
-     */
     render(ctx) {
         const {label, x, y, width} = this;
         ctx.save();

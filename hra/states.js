@@ -1,7 +1,5 @@
 const STATES = {
-    SPLASH: 'splashScreenState',
     GAME: 'gameState',
-    GAME_A_OFF: 'gameStateAudioOff',
     MAIN_MENU: 'mainMenu',
     GAME_OVER: 'gameOver',
     INSTRUCT: 'instructionState',
@@ -19,13 +17,12 @@ class StateManager {
     init() {
         const ctx = this.ctx;
         this.states = {
-            splashScreenState: new SplashScreenState(this, ctx),
+            mainMenu: new mainMenu(this, ctx),
             gameState: new GameState(this, ctx),
-            mainMenu: new MainMenu(this, ctx),
             gameOver: new gameOver(this, ctx),
             instructionState: new instructionState(this, ctx),
         };
-        this.currentState = this.states.splashScreenState;
+        this.currentState = this.states.mainMenu;
     }
 
     changeState(state) {
@@ -44,14 +41,6 @@ class StateManager {
         this.currentState.handleEvent(ev);
     }
 
-    // handleKeyEvent(e) {
-    //     this.currentState.handleKeyEvent(e);
-    // }
-
-    // handleMouseEvent(e) {
-    //     this.currentState.handleMouseEvent(e);
-    // }
-
     render() {
         this.currentState.render(this.ctx);
     }
@@ -68,7 +57,6 @@ class BaseState {
     }
 
     render() {
-        // TODO pridat logiku pre zoradovanie objektov, ktory sa ma prvy zobrazit
         this.objects.forEach(object => object.render(this.ctx));
     }
 
@@ -79,31 +67,22 @@ class BaseState {
     handleEvent(ev) {
 
     }
-
-    // handleMouseEvent(e) {
-
-    // }
-
-    // handleKeyEvent(e) {
-
-    // }
 }
 
-class SplashScreenState extends BaseState {
+class mainMenu extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
 
-        const startButton = new ImageButton(400, 50, 150, 150, resourceManager.getImageSource('start_button'));
+        const startButton = new ImageButton(400, 125, 150, 150, resourceManager.getImageSource('start_button'));
         startButton.onClick((ev) => {
             this.stateManager.changeState(STATES.INSTRUCT);
         });
 
-        const exitButton = new ImageButton(400, 150, 150, 150, resourceManager.getImageSource('exit_button'));
+        const exitButton = new ImageButton(400, 225, 150, 150, resourceManager.getImageSource('exit_button'));
         exitButton.onClick((ev) => {
             this.stateManager.changeState(STATES.GAME_OVER);
         });
-
 
 
         this.objects = [
@@ -119,39 +98,13 @@ class SplashScreenState extends BaseState {
         });
     }
 
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (e.keyCode === '13') {
-    //         this.stateManager.changeState('gameState');
-    //     }
-    // }
-
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (type)
-    //     if (e.keyCode === '13') {
-    //         this.stateManager.changeState(gameState);
-    //     }
-    // }
 }
 class instructionState extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
 
         
-        const startButton = new ImageButton(0, 0, 1000, 400, resourceManager.getImageSource('instruct'));
+        const startButton = new ImageButton(0, 0, 1000, 500, resourceManager.getImageSource('instruct'));
         startButton.onClick((ev) => {
             this.stateManager.changeState(STATES.GAME);
         });
@@ -165,26 +118,19 @@ class instructionState extends BaseState {
         this.objects.forEach((object) => {
             object.handleEvent(ev);
         });
-
-        if (isKeyPressEvent(ev) && ev.key === 'g') {
-            this.stateManager.changeState(STATES.GAME);
-        }
     }
-
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (e.keyCode === 's') {
-    //         this.stateManager.changeState(gameState);
-    //     }
-    // }
 }
 
+let datum = new Date();
+let skore = 0;
+let cas = Math.floor((Math.random()*30)+1);
+let pocet = Math.floor((Math.random()*5)+1);
+let stary_cas = datum.getSeconds();
+let frame = 0;
+let shoot = 0;
+let x = 0;
+let sound = 0;
+let faza = 1;
 
 class GameState extends BaseState {
     constructor(manager, ctx) {
@@ -193,16 +139,13 @@ class GameState extends BaseState {
 
 
         this.bgImage = resourceManager.getImageSource('bg');
-       // this.pointerImage = resourceManager.getImageSource('pointer2');
 
-        var music = document.getElementById("music")
-
-
-
+        let music = document.getElementById("music")
 
         const audioOnButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_on'));
         const audioOffButton = new ImageButton(950, 0, 50, 50, resourceManager.getImageSource('audio_off'));
         this.bullets=[]
+        this.bulletsEnemy=[];
         this.objects2 = [
             audioOnButton,
         ];
@@ -211,6 +154,7 @@ class GameState extends BaseState {
             this.objects2 = [
                 audioOffButton,
             ]
+            sound = 1;
             music.play()
         });
 
@@ -218,6 +162,7 @@ class GameState extends BaseState {
             this.objects2 = [
                 audioOnButton,
             ]
+            sound = 0;
             music.pause()
         });
 
@@ -231,120 +176,155 @@ class GameState extends BaseState {
 
 
     handleEvent(ev) {
+
+
+
         this.objects2.forEach((object) => {
             object.handleEvent(ev);
         });
 
+
         if (isKeyPressEvent(ev) && ev.key === 'a') {
-            this.mainship.moveLeft(ev);
+                this.mainship.moveLeft(ev);
         }
 
         if (isKeyPressEvent(ev) && ev.key === 'd') {
-            this.mainship.moveRight(ev);
+                this.mainship.moveRight(ev);
         }
 
-        if (isKeyPressEvent(ev) && ev.key === 'x') {
-            this.bullets.push(new blueBullet())
+        let ms_shot = new Audio("audio/main_ship_bullet.mp3");
+
+        if (isKeyPressEvent(ev) && ev.key === ' ' && x>10) {
+            this.bullets.push(new blueBullet(this.mainship.x,this.mainship.y))
+            x=0;
+            if(sound === 1) ms_shot.play().then(r => {});
         }
 
-
-        //this.mainship.handleEvent(ev);
+        shoot++;
     }
 
 
 
     update(dt) {
+        let es_shot = new Audio("audio/enemy_ship_bullet.mp3");
+        let hit = new Audio("audio/hit.mp3");
         this.objects.forEach((object) => {
             object.move(dt);
         });
 
         this.bullets.forEach((object) => {
-            object.shoot(dt);
+            object.shoot(dt,this.mainship.x,this.mainship.y);
         });
 
+        this.bulletsEnemy.forEach((object) => {
+            object.shoot(dt,this.mainship.x,this.mainship.y);
+        });
+
+        for(let i=0;i<this.objects.length;i++){
+            for(let j=0;j<this.bullets.length;j++) {
+                if (this.objects.length > 0 && this.bullets.length > 0) {
+                if (this.bullets[j].x <= this.objects[i].x + 25 && this.bullets[j].x >= this.objects[i].x - 25 && this.bullets[j].y <= this.objects[i].y + 15 && this.bullets[j].y >= this.objects[i].y - 15){
+                    if(sound === 1) hit.play().then(r => {});
+                    this.objects[i].health -= 50;
+                    if(this.objects[i].health <= 0){
+                        if(this.objects[i].name === "enemyShip") skore += 10;
+                        else if(this.objects[i].name === "enemyShip2") skore += 30;
+                        this.objects.splice(i, 1);
+                        break;
+                    }
+                    this.bullets.splice(j, 1);
+                    j++;
+                    break;
+                }
+                if(this.bullets[j].y<=10){
+                    this.bullets.splice(j, 1);
+                    j++;
+                    break;
+                }
+            }
+                pocet = Math.floor(Math.random()*4);
+            }
+
+            for(let i=0;i<this.objects.length;i++){
+                if(frame % this.objects[i].id === 0 && frame > 50){
+                    this.bulletsEnemy.push(new redBullet(this.objects[i].x,this.objects[i].y));
+                    this.bulletsEnemy[this.bulletsEnemy.length-1].shoot();
+                    if(sound === 1) es_shot.play().then(r => {});
+                }
+            }
+        }
+        if (frame >= 2000 && frame < 4000) faza = 2;
+        else if (frame >= 4000 && frame < 6000) faza = 3;
+        else if (frame >= 6000 && frame < 8000) faza = 4;
+
+        for(let i=0;i<this.bulletsEnemy.length;i++){
+            if(this.bulletsEnemy[i].y >= this.mainship.y-15 && this.bulletsEnemy[i].y <= this.mainship.y+15 && this.bulletsEnemy[i].x >= this.mainship.x - 70 && this.bulletsEnemy[i].x <= this.mainship.x + 70){
+                this.bulletsEnemy.splice(i,6);
+                if(frame < 2000) this.mainship.health -= 20;
+                else if (frame >= 2000 && frame < 4000) this.mainship.health -= 40;
+                else if (frame >= 4000 && frame < 6000) this.mainship.health -= 60;
+                else if (frame >= 6000) this.mainship.health -= 100;
+                if(this.mainship.health <= 0){
+                    this.mainship.health += 500;
+                    this.objects = [];
+                    this.bullets = [];
+                    this.bulletsEnemy = [];
+                    this.stateManager.changeState(STATES.GAME_OVER);
+                }
+                if(sound === 1) hit.play().then(r => {});
+                break;
+            }
+            if(this.bulletsEnemy[i].y >= 475){
+                this.bulletsEnemy.splice(i,6);
+                break;
+            }
+        }
+        if(this.objects.length < 1){
+            for (let k=0; k<=pocet; k++){
+                this.objects.push(new enemyShip());
+                this.objects.push(new enemyShip2());
+            }
+        }
+        x++;
+        frame++;
+        datum = new Date();
+        let aktual_cas = datum.getSeconds();
+        let temp = aktual_cas-stary_cas;
+        if(temp === cas){
+            for(let i=0;i<pocet;i++){
+                this.objects.push(new enemyShip2());
+                this.objects.push(new enemyShip());
+            }
+            cas = Math.floor((Math.random()*30)+1);
+            pocet = Math.floor((Math.random()*5)+1);
+        }
     }
 
     render(ctx) {
-        this.ctx.drawImage(this.bgImage,0,0,1000,400);
+        this.ctx.drawImage(this.bgImage,0,0,1000,500);
+        this.ctx.fillText("SKÓRE: " + skore,800,500);
+        this.ctx.fillText("FÁZA: " + faza,50,465);
+        this.ctx.fillText("HP: " + this.mainship.health,50,500);
+        this.ctx.font = "30px Arial";
         this.objects.forEach(object => object.render(this.ctx));
         this.objects2.forEach(object => object.render(this.ctx));
         this.bullets.forEach(object => object.render(this.ctx));
+        this.bulletsEnemy.forEach(object => object.render(this.ctx));
         this.mainship.render(this.ctx);
     }
-
-
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (type)
-    //     if (e.keyCode === '13') {
-    //         this.stateManager.changeState(gameState);
-    //     }
-    // }
-}
-
-
-
-class MainMenu extends BaseState {
-    constructor(manager, ctx) {
-        super(manager, ctx);
-
-        const startGameButton = new TextButton(100, 100, 200, 40, 40, 'START');
-        startGameButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.GAME);
-        });
-
-        const infoButton = new TextButton(100, 200, 200, 40, 40, 'SETTINGS');
-        infoButton.onClick((ev) => {
-            this.stateManager.changeState(STATES.GAME_OVER);
-        });
-
-        this.objects = [
-            startGameButton,
-            infoButton,
-        ];
-    }
-
-    handleEvent(ev) {
-        this.objects.forEach((object) => {
-            object.handleEvent(ev);
-        });
-
-
-    }
-
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (e.keyCode === 's') {
-    //         this.stateManager.changeState(gameState);
-    //     }
-    // }
 }
 
 class gameOver extends BaseState {
     constructor(manager, ctx) {
         super(manager, ctx);
         const canvas = document.getElementById("canvas");
-
         this.objects = [
             new Background(0, 0, canvas.width, canvas.height),
-            new TextButton(325, 200, 400, 100, 60, 'GAME OVER'),
-            new TextButton(400, 250, 200, 40, 40, 'SCORE: '),
         ];
 
         const retryButton = new TextButton(450, 320, 200, 40, 40, 'RETRY')
         retryButton.onClick((ev) => {
+            skore = 0;
             this.stateManager.changeState(STATES.GAME);
         });
 
@@ -356,6 +336,8 @@ class gameOver extends BaseState {
     render(ctx) {
         this.objects.forEach(object => object.render(this.ctx));
         this.objects2.forEach(object => object.render(this.ctx));
+        this.ctx.fillText("GAME OVER",425,220);
+        this.ctx.fillText("SKÓRE: " + skore,435,265);
     }
 
 
@@ -368,18 +350,4 @@ class gameOver extends BaseState {
             this.stateManager.changeState(STATES.GAME);
         }
     }
-
-
-    // /**
-    //  *
-    //  *
-    //  * @param {KeyboardEvent} e
-    //  * @param { 1 | 2 | 3 } type
-    //  * @memberof SplashScreenState
-    //  */
-    // handleKeyEvent(e, type) {
-    //     if (e.keyCode === 's') {
-    //         this.stateManager.changeState(gameState);
-    //     }
-    // }
 }

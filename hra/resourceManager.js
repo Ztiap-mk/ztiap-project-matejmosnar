@@ -1,4 +1,3 @@
-// toto sluzi na inicialne loadnutie vsetkych obrazkov... aby to nebolo ako hidden image v html
 class ResourceManager {
     loadedImages = new Map();
     loadedSounds = new Map();
@@ -21,11 +20,6 @@ class ResourceManager {
         )
     }
 
-    // dynamicky vytvorenie Image objectov spolu s tym aby sa nacitali obrazky
-    // pouzili sa promise a async/await -> lepsie sa pracuje s asynchronnymi operaciami pri nacitavani obrazkov
-    // nejaky tutorial ako to funguje ->
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
     async loadImage(imgResource) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -52,8 +46,6 @@ class ResourceManager {
             }
         });
     }
-
-    // ziskat js object Image, ktory sa posle do canvas
     getImageSource(imageName) {
         const image = this.loadedImages.get(imageName);
         if (image == null) {
